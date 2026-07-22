@@ -187,6 +187,14 @@ section {
   padding: 10px 0;
 }
 
+/* Pages without a dark hero behind the fixed header (e.g. the quote page)
+   need an always-on solid background for contrast against the light body. */
+.quote-page .site-header {
+  background: rgba(10, 10, 10, 0.97);
+  box-shadow: var(--shadow-md);
+  padding: 10px 0;
+}
+
 .navbar {
   display: flex;
   align-items: center;
@@ -685,6 +693,32 @@ section {
   align-items: start;
 }
 
+.contact-compact {
+  max-width: 640px;
+}
+
+.contact-cta {
+  margin-top: 32px;
+}
+
+/* ----- Quote page ----- */
+.quote {
+  background: var(--gray-50);
+  padding-top: 140px;
+  min-height: calc(100vh - 280px);
+}
+
+.quote-layout {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.quote-intro .section-title {
+  margin-bottom: 16px;
+}
+
 .map-embed {
   margin-top: 50px;
   border-radius: var(--radius-lg);
@@ -970,6 +1004,11 @@ section {
     gap: 46px;
   }
 
+  .quote-layout {
+    grid-template-columns: 1fr;
+    gap: 46px;
+  }
+
   .footer-grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -1044,6 +1083,10 @@ section {
 
   .contact-form-wrap {
     padding: 28px;
+  }
+
+  .quote {
+    padding-top: 120px;
   }
 
   .map-embed iframe {
