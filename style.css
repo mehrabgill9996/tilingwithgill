@@ -685,6 +685,19 @@ section {
   align-items: start;
 }
 
+.map-embed {
+  margin-top: 50px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.map-embed iframe {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}
+
 .contact-lead {
   color: var(--gray-600);
   margin-bottom: 30px;
@@ -1031,6 +1044,10 @@ section {
 
   .contact-form-wrap {
     padding: 28px;
+  }
+
+  .map-embed iframe {
+    height: 320px;
   }
 }
 
