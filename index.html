@@ -306,7 +306,9 @@
       </div>
 
       <div class="contact-form-wrap">
-        <form id="contact-form" class="contact-form" novalidate>
+        <form id="contact-form" class="contact-form" action="https://api.web3forms.com/submit" method="POST" novalidate>
+          <input type="hidden" name="access_key" value="afe254e4-fe73-4a20-aae0-8e3b2d7eca64" />
+          <input type="hidden" name="subject" value="New Quote Request from Website" />
           <div class="form-row">
             <label for="name">Name</label>
             <input type="text" id="name" name="name" placeholder="Your full name" required />

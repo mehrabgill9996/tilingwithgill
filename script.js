@@ -128,12 +128,13 @@ document.addEventListener('DOMContentLoaded', function () {
   var formNote = document.getElementById('form-note');
 
   if (contactForm) {
+    var submitBtn = contactForm.querySelector('button[type="submit"]');
+
     contactForm.addEventListener('submit', function (e) {
       e.preventDefault();
 
       var name = document.getElementById('name').value.trim();
       var email = document.getElementById('email').value.trim();
-      var phone = document.getElementById('phone').value.trim();
       var message = document.getElementById('message').value.trim();
 
       if (!name || !email || !message) {
@@ -141,23 +142,45 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
 
-      // Build a mailto link so the user's email client opens with the message pre-filled
-      var subject = encodeURIComponent('Free Quote Request from ' + name);
-      var bodyLines = [
-        'Name: ' + name,
-        'Email: ' + email,
-        'Phone: ' + (phone || 'N/A'),
-        '',
-        'Message:',
-        message
-      ];
-      var body = encodeURIComponent(bodyLines.join('\n'));
-      var mailtoLink = 'mailto:mehrabgill9996@gmail.com?subject=' + subject + '&body=' + body;
+      var originalBtnText = submitBtn ? submitBtn.textContent : '';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+      }
 
-      window.location.href = mailtoLink;
+      var formData = new FormData(contactForm);
+      var payload = Object.fromEntries(formData.entries());
 
-      showFormNote('Thanks, ' + name.split(' ')[0] + '! Your email app should now open with your message ready to send.', 'success');
-      contactForm.reset();
+      fetch(contactForm.action, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+        .then(function (response) {
+          return response.json().then(function (data) {
+            return { ok: response.ok, data: data };
+          });
+        })
+        .then(function (result) {
+          if (result.ok && result.data.success) {
+            showFormNote('Thanks, ' + name.split(' ')[0] + '! Your message has been sent — we\'ll be in touch soon.', 'success');
+            contactForm.reset();
+          } else {
+            showFormNote(result.data.message || 'Something went wrong. Please try again.', 'error');
+          }
+        })
+        .catch(function () {
+          showFormNote('Something went wrong. Please check your connection and try again.', 'error');
+        })
+        .finally(function () {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+          }
+        });
     });
   }
 
