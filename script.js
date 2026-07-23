@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ----- Scroll-reveal animations ----- */
   var revealTargets = document.querySelectorAll(
-    '.about-grid, .service-card, .why-card, .gallery-item, .contact-grid, .contact-compact, .quote-layout, .section-heading'
+    '.about-grid, .service-card, .why-card, .gallery-item, .contact-grid, .contact-compact, .quote-layout, .feedback-card, .thankyou-card, .section-heading'
   );
 
   revealTargets.forEach(function (el) {
@@ -166,8 +166,18 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(function (result) {
           if (result.ok && result.data.success) {
-            showFormNote('Thanks, ' + name.split(' ')[0] + '! Your message has been sent — we\'ll be in touch soon.', 'success');
             contactForm.reset();
+
+            // If this form declares a success redirect (e.g. the quote form
+            // sending users to thankyou.html), send them there instead of
+            // showing the inline note.
+            var redirectUrl = contactForm.getAttribute('data-success-redirect');
+            if (redirectUrl) {
+              window.location.href = redirectUrl;
+              return;
+            }
+
+            showFormNote('Thanks, ' + name.split(' ')[0] + '! Your message has been sent — we\'ll be in touch soon.', 'success');
           } else {
             showFormNote(result.data.message || 'Something went wrong. Please try again.', 'error');
           }
@@ -189,6 +199,81 @@ document.addEventListener('DOMContentLoaded', function () {
     formNote.textContent = text;
     formNote.classList.remove('success', 'error');
     formNote.classList.add(type);
+  }
+
+  /* ----- Feedback form handling ----- */
+  // NOTE: This form is front-end only — on submit it simply shows an inline
+  // confirmation message below. It does NOT send an email, make a network
+  // request, or store the submission anywhere. To actually collect and
+  // review feedback later, wire this form up to a backend or a service
+  // like Formspree, Google Forms, or Web3Forms (as the quote form does).
+  var feedbackForm = document.getElementById('feedback-form');
+  var feedbackNote = document.getElementById('feedback-note');
+  var starButtons = document.querySelectorAll('.star-rating .star');
+  var starRatingWrap = document.getElementById('star-rating');
+  var feedbackRatingInput = document.getElementById('feedback-rating');
+
+  function setStars(rating) {
+    starButtons.forEach(function (star) {
+      var value = Number(star.getAttribute('data-value'));
+      star.classList.toggle('active', value <= rating);
+    });
+  }
+
+  if (starButtons.length && feedbackRatingInput) {
+    starButtons.forEach(function (star) {
+      star.addEventListener('click', function () {
+        var value = Number(star.getAttribute('data-value'));
+        feedbackRatingInput.value = String(value);
+        setStars(value);
+      });
+
+      star.addEventListener('mouseenter', function () {
+        setStars(Number(star.getAttribute('data-value')));
+      });
+
+      star.addEventListener('focus', function () {
+        setStars(Number(star.getAttribute('data-value')));
+      });
+    });
+
+    if (starRatingWrap) {
+      starRatingWrap.addEventListener('mouseleave', function () {
+        setStars(Number(feedbackRatingInput.value));
+      });
+    }
+  }
+
+  if (feedbackForm) {
+    feedbackForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var name = document.getElementById('feedback-name').value.trim();
+      var comments = document.getElementById('feedback-comments').value.trim();
+      var rating = Number(feedbackRatingInput ? feedbackRatingInput.value : 0);
+
+      if (!name || !comments) {
+        showFeedbackNote('Please add your name and a comment.', 'error');
+        return;
+      }
+
+      if (!rating) {
+        showFeedbackNote('Please select a star rating.', 'error');
+        return;
+      }
+
+      // Submission is not sent or stored anywhere — see note above.
+      showFeedbackNote('Thank you for your feedback!', 'success');
+      feedbackForm.reset();
+      setStars(0);
+    });
+  }
+
+  function showFeedbackNote(text, type) {
+    if (!feedbackNote) return;
+    feedbackNote.textContent = text;
+    feedbackNote.classList.remove('success', 'error');
+    feedbackNote.classList.add(type);
   }
 
 });
