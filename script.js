@@ -1,5 +1,5 @@
 // =========================================================
-// Tiling with Gill — Site Script
+// Tiles with Gill — Site Script
 // =========================================================
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ----- Scroll-reveal animations ----- */
   var revealTargets = document.querySelectorAll(
-    '.about-grid, .service-card, .why-card, .gallery-item, .testimonial-card, .contact-grid, .contact-compact, .quote-layout, .feedback-card, .thankyou-card, .section-heading'
+    '.about-grid, .service-card, .why-card, .step-card, .gallery-item, .testimonial-card, .faq-item, .contact-grid, .contact-compact, .quote-layout, .feedback-card, .thankyou-card, .privacy-content, .section-heading'
   );
 
   revealTargets.forEach(function (el) {
@@ -275,5 +275,37 @@ document.addEventListener('DOMContentLoaded', function () {
     feedbackNote.classList.remove('success', 'error');
     feedbackNote.classList.add(type);
   }
+
+  /* ----- FAQ accordion ----- */
+  var faqItems = document.querySelectorAll('.faq-item');
+
+  faqItems.forEach(function (item) {
+    var question = item.querySelector('.faq-question');
+    var answer = item.querySelector('.faq-answer');
+    if (!question || !answer) return;
+
+    question.addEventListener('click', function () {
+      var isOpen = item.classList.contains('open');
+
+      // Close any other open FAQ items (single-open accordion behaviour)
+      faqItems.forEach(function (otherItem) {
+        if (otherItem !== item) {
+          otherItem.classList.remove('open');
+          otherItem.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+          otherItem.querySelector('.faq-answer').style.maxHeight = null;
+        }
+      });
+
+      if (isOpen) {
+        item.classList.remove('open');
+        question.setAttribute('aria-expanded', 'false');
+        answer.style.maxHeight = null;
+      } else {
+        item.classList.add('open');
+        question.setAttribute('aria-expanded', 'true');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      }
+    });
+  });
 
 });
