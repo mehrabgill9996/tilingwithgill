@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ----- Scroll-reveal animations ----- */
   var revealTargets = document.querySelectorAll(
-    '.about-grid, .service-card, .why-card, .gallery-item, .contact-grid, .contact-compact, .quote-layout, .feedback-card, .thankyou-card, .section-heading'
+    '.about-grid, .service-card, .why-card, .gallery-item, .testimonial-card, .contact-grid, .contact-compact, .quote-layout, .feedback-card, .thankyou-card, .section-heading'
   );
 
   revealTargets.forEach(function (el) {
